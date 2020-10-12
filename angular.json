@@ -37,6 +37,11 @@
             ],
             "styles": [
               "site/doc/styles.less"
+            ],
+            "allowedCommonJsDependencies": [
+              "codesandbox",
+              "codesandbox-import-utils",
+              "@ant-design/colors"
             ]
           },
           "configurations": {
@@ -110,6 +115,36 @@
             "exclude": [
               "**/node_modules/**"
             ]
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "ng-zorro-antd-doc:build",
+            "serverTarget": "ng-zorro-antd-doc:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ng-zorro-antd-doc:production",
+              "serverTarget": "ng-zorro-antd-doc:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "ng-zorro-antd-doc:build:production",
+            "serverTarget": "ng-zorro-antd-doc:server:production",
+            "routesFile": "scripts/prerender/route-paths.txt"
+          },
+          "configurations": {
+            "production": {}
+          }
+        },
+        "service-work": {
+          "builder": "additional-service-worker-builder:service-worker",
+          "options": {
+            "browserTarget": "ng-zorro-antd-doc:build:production"
           }
         }
       }

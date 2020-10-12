@@ -3,7 +3,7 @@
  * found in the LICENSE file at https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/LICENSE
  */
 
-import { ComponentPortal, Portal, PortalInjector, TemplatePortal } from '@angular/cdk/portal';
+import { ComponentPortal, Portal, TemplatePortal } from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -24,7 +24,7 @@ import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 
 import { NzConfigService } from 'ng-zorro-antd/core/config';
-import { NZ_EMPTY_COMPONENT_NAME, NzEmptyCustomContent, NzEmptySize } from './config';
+import { NzEmptyCustomContent, NzEmptySize, NZ_EMPTY_COMPONENT_NAME } from './config';
 
 function getEmptySize(componentName: string): NzEmptySize {
   switch (componentName) {
@@ -110,8 +110,10 @@ export class NzEmbedEmptyComponent implements OnChanges, OnInit, OnDestroy {
       this.contentType = 'template';
       this.contentPortal = new TemplatePortal(content, this.viewContainerRef, context);
     } else if (content instanceof Type) {
-      const context = new WeakMap([[NZ_EMPTY_COMPONENT_NAME, this.nzComponentName]]);
-      const injector = new PortalInjector(this.injector, context);
+      const injector = Injector.create({
+        parent: this.injector,
+        providers: [{ provide: NZ_EMPTY_COMPONENT_NAME, useValue: this.nzComponentName }]
+      });
       this.contentType = 'component';
       this.contentPortal = new ComponentPortal(content, this.viewContainerRef, injector);
     } else {

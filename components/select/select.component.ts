@@ -32,7 +32,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { slideMotion } from 'ng-zorro-antd/core/animation';
-import { NzConfigService, WithConfig } from 'ng-zorro-antd/core/config';
+import { NzConfigKey, NzConfigService, WithConfig } from 'ng-zorro-antd/core/config';
 import { NzNoAnimationDirective } from 'ng-zorro-antd/core/no-animation';
 import { BooleanInput, NzSafeAny, OnChangeType, OnTouchedType } from 'ng-zorro-antd/core/types';
 import { InputBoolean } from 'ng-zorro-antd/core/util';
@@ -51,7 +51,7 @@ const defaultFilterOption: NzFilterOptionType = (searchValue: string, item: NzSe
   }
 };
 
-const NZ_CONFIG_COMPONENT_NAME = 'select';
+const NZ_CONFIG_MODULE_NAME: NzConfigKey = 'select';
 
 export type NzSelectSizeType = 'large' | 'default' | 'small';
 
@@ -100,10 +100,11 @@ export type NzSelectSizeType = 'large' | 'default' | 'small';
       (clear)="onClearSelection()"
     ></nz-select-clear>
     <nz-select-arrow
-      *ngIf="nzShowArrow && nzMode === 'default'"
+      *ngIf="nzShowArrow"
       [loading]="nzLoading"
       [search]="nzOpen && nzShowSearch"
       [suffixIcon]="nzSuffixIcon"
+      (click)="setOpenState(!nzOpen)"
     ></nz-select-arrow>
     <ng-template
       cdkConnectedOverlay
@@ -147,9 +148,9 @@ export type NzSelectSizeType = 'large' | 'default' | 'small';
     '[class.ant-select]': 'true',
     '[class.ant-select-lg]': 'nzSize === "large"',
     '[class.ant-select-sm]': 'nzSize === "small"',
-    '[class.ant-select-show-arrow]': `nzShowArrow && nzMode === 'default'`,
+    '[class.ant-select-show-arrow]': `nzShowArrow`,
     '[class.ant-select-disabled]': 'nzDisabled',
-    '[class.ant-select-show-search]': `nzShowSearch || nzMode !== 'default'`,
+    '[class.ant-select-show-search]': `(nzShowSearch || nzMode !== 'default') && !nzDisabled`,
     '[class.ant-select-allow-clear]': 'nzAllowClear',
     '[class.ant-select-borderless]': 'nzBorderless',
     '[class.ant-select-open]': 'nzOpen',
@@ -159,6 +160,8 @@ export type NzSelectSizeType = 'large' | 'default' | 'small';
   }
 })
 export class NzSelectComponent implements ControlValueAccessor, OnInit, AfterViewInit, OnDestroy, AfterContentInit, OnChanges {
+  readonly _nzModuleName: NzConfigKey = NZ_CONFIG_MODULE_NAME;
+
   static ngAcceptInputType_nzAllowClear: BooleanInput;
   static ngAcceptInputType_nzBorderless: BooleanInput;
   static ngAcceptInputType_nzShowSearch: BooleanInput;
@@ -181,12 +184,11 @@ export class NzSelectComponent implements ControlValueAccessor, OnInit, AfterVie
   @Input() nzDropdownRender: TemplateRef<NzSafeAny> | null = null;
   @Input() nzCustomTemplate: TemplateRef<{ $implicit: NzSelectItemInterface }> | null = null;
   @Input()
-  @WithConfig<TemplateRef<NzSafeAny> | string | null>(NZ_CONFIG_COMPONENT_NAME)
+  @WithConfig<TemplateRef<NzSafeAny> | string | null>()
   nzSuffixIcon: TemplateRef<NzSafeAny> | string | null = null;
   @Input() nzClearIcon: TemplateRef<NzSafeAny> | null = null;
   @Input() nzRemoveIcon: TemplateRef<NzSafeAny> | null = null;
   @Input() nzMenuItemSelectedIcon: TemplateRef<NzSafeAny> | null = null;
-  @Input() nzShowArrow = true;
   @Input() nzTokenSeparators: string[] = [];
   @Input() nzMaxTagPlaceholder: TemplateRef<{ $implicit: NzSafeAny[] }> | null = null;
   @Input() nzMaxMultipleCount = Infinity;
@@ -194,7 +196,7 @@ export class NzSelectComponent implements ControlValueAccessor, OnInit, AfterVie
   @Input() nzFilterOption: NzFilterOptionType = defaultFilterOption;
   @Input() compareWith: (o1: NzSafeAny, o2: NzSafeAny) => boolean = (o1: NzSafeAny, o2: NzSafeAny) => o1 === o2;
   @Input() @InputBoolean() nzAllowClear = false;
-  @Input() @WithConfig<boolean>(NZ_CONFIG_COMPONENT_NAME) @InputBoolean() nzBorderless = false;
+  @Input() @WithConfig<boolean>() @InputBoolean() nzBorderless = false;
   @Input() @InputBoolean() nzShowSearch = false;
   @Input() @InputBoolean() nzLoading = false;
   @Input() @InputBoolean() nzAutoFocus = false;
@@ -203,6 +205,15 @@ export class NzSelectComponent implements ControlValueAccessor, OnInit, AfterVie
   @Input() @InputBoolean() nzDisabled = false;
   @Input() @InputBoolean() nzOpen = false;
   @Input() nzOptions: NzSelectOptionInterface[] = [];
+
+  @Input()
+  set nzShowArrow(value: boolean) {
+    this._nzShowArrow = value;
+  }
+  get nzShowArrow(): boolean {
+    return this._nzShowArrow === undefined ? this.nzMode === 'default' : this._nzShowArrow;
+  }
+
   @Output() readonly nzOnSearch = new EventEmitter<string>();
   @Output() readonly nzScrollToBottom = new EventEmitter<void>();
   @Output() readonly nzOpenChange = new EventEmitter<boolean>();
@@ -222,6 +233,7 @@ export class NzSelectComponent implements ControlValueAccessor, OnInit, AfterVie
   private isReactiveDriven = false;
   private value: NzSafeAny | NzSafeAny[];
   private destroy$ = new Subject();
+  private _nzShowArrow: boolean | undefined;
   onChange: OnChangeType = () => {};
   onTouched: OnTouchedType = () => {};
   dropDownPosition: 'top' | 'center' | 'bottom' = 'bottom';

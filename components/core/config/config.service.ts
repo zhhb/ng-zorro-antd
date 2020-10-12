@@ -9,7 +9,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { filter, mapTo } from 'rxjs/operators';
 
-import { NZ_CONFIG, NzConfig, NzConfigKey } from './config';
+import { NzConfig, NzConfigKey, NZ_CONFIG } from './config';
 
 const isDefined = function (value?: NzSafeAny): boolean {
   return value !== undefined;
@@ -52,7 +52,7 @@ export class NzConfigService {
  * config.
  */
 // tslint:disable-next-line:typedef
-export function WithConfig<T>(componentName: NzConfigKey) {
+export function WithConfig<T>() {
   return function ConfigDecorator(target: NzSafeAny, propName: NzSafeAny, originalDescriptor?: TypedPropertyDescriptor<T>): NzSafeAny {
     const privatePropName = `$$__assignedValue__${propName}`;
 
@@ -71,7 +71,7 @@ export function WithConfig<T>(componentName: NzConfigKey) {
           return originalValue;
         }
 
-        const componentConfig = this.nzConfigService.getConfigForComponent(componentName) || {};
+        const componentConfig = this.nzConfigService.getConfigForComponent(this._nzModuleName) || {};
         const configValue = componentConfig[propName];
         const ret = isDefined(configValue) ? configValue : originalValue;
 

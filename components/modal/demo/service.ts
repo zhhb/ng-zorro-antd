@@ -16,19 +16,18 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
     <ng-template #tplTitle>
       <span>Title Template</span>
     </ng-template>
-    <ng-template #tplContent let-params let-ref="modalRef">
+    <ng-template #tplContent let-params>
       <p>some contents...</p>
       <p>some contents...</p>
       <p>{{ params.value }}</p>
-      <button nz-button (click)="ref.destroy()">Destroy</button>
     </ng-template>
-    <ng-template #tplFooter>
-      <button nz-button nzType="primary" (click)="destroyTplModal()" [nzLoading]="tplModalButtonLoading">
-        Close after submit
-      </button>
+    <ng-template #tplFooter let-ref="modalRef">
+      <button nz-button (click)="ref.destroy()">Destroy</button>
+      <button nz-button nzType="primary" (click)="destroyTplModal(ref)" [nzLoading]="tplModalButtonLoading">Close after submit</button>
     </ng-template>
 
-    <br /><br />
+    <br />
+    <br />
 
     <button nz-button nzType="primary" (click)="createComponentModal()">
       <span>Use Component</span>
@@ -36,12 +35,13 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
     <button nz-button nzType="primary" (click)="createCustomButtonModal()">Custom Button</button>
 
-    <br /><br />
+    <br />
+    <br />
 
     <button nz-button nzType="primary" (click)="openAndCloseAll()">Open more modals then close all after 2s</button>
-    <nz-modal [(nzVisible)]="htmlModalVisible" nzMask="false" [nzZIndex]="1001" nzTitle="Non-service html modal"
-      >This is a non-service html modal</nz-modal
-    >
+    <nz-modal [(nzVisible)]="htmlModalVisible" nzMask="false" [nzZIndex]="1001" nzTitle="Non-service html modal">
+      This is a non-service html modal
+    </nz-modal>
   `,
   styles: [
     `
@@ -52,7 +52,6 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
   ]
 })
 export class NzDemoModalServiceComponent {
-  tplModal?: NzModalRef;
   tplModalButtonLoading = false;
   htmlModalVisible = false;
   disabled = false;
@@ -69,7 +68,7 @@ export class NzDemoModalServiceComponent {
   }
 
   createTplModal(tplTitle: TemplateRef<{}>, tplContent: TemplateRef<{}>, tplFooter: TemplateRef<{}>): void {
-    this.tplModal = this.modal.create({
+    this.modal.create({
       nzTitle: tplTitle,
       nzContent: tplContent,
       nzFooter: tplFooter,
@@ -82,11 +81,11 @@ export class NzDemoModalServiceComponent {
     });
   }
 
-  destroyTplModal(): void {
+  destroyTplModal(modelRef: NzModalRef): void {
     this.tplModalButtonLoading = true;
     setTimeout(() => {
       this.tplModalButtonLoading = false;
-      this.tplModal!.destroy();
+      modelRef.destroy();
     }, 1000);
   }
 
@@ -95,7 +94,6 @@ export class NzDemoModalServiceComponent {
       nzTitle: 'Modal Title',
       nzContent: NzModalCustomComponent,
       nzViewContainerRef: this.viewContainerRef,
-      nzGetContainer: () => document.body,
       nzComponentParams: {
         title: 'title in component',
         subtitle: 'component sub title，will be changed after 2 sec'

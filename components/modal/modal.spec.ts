@@ -17,7 +17,7 @@ import {
 import { ComponentFixture, fakeAsync, flush, flushMicrotasks, inject, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NzConfigService } from 'ng-zorro-antd';
+import { NzConfigService } from 'ng-zorro-antd/core/config';
 
 import { createKeyboardEvent, dispatchEvent, dispatchKeyboardEvent, dispatchMouseEvent } from 'ng-zorro-antd/core/testing';
 
@@ -972,6 +972,34 @@ describe('NzModal', () => {
       flush();
       expect(overlayContainerElement.querySelectorAll('nz-modal-container').length).toBe(0);
     }));
+    it('should not close when the callback is return Promise.reject', fakeAsync(() => {
+      const modalRef = modalService.create({
+        nzContent: TestWithModalContentComponent,
+        nzOnOk: () => {
+          return new Promise((_, reject) => {
+            setTimeout(() => {
+              reject('Promise.reject');
+            }, 200);
+          });
+        }
+      });
+      fixture.detectChanges();
+
+      expectAsync(modalRef.triggerOk()).toBeRejectedWith('Promise.reject');
+      fixture.detectChanges();
+      expect(modalRef.getConfig().nzOkLoading).toBe(true);
+      expect(overlayContainerElement.querySelectorAll('nz-modal-container').length).toBe(1);
+      tick(200);
+      fixture.detectChanges();
+      flush();
+      expect(modalRef.getConfig().nzOkLoading).toBe(false);
+      expect(overlayContainerElement.querySelectorAll('nz-modal-container').length).toBe(1);
+
+      modalRef.close();
+      fixture.detectChanges();
+      flush();
+      expect(overlayContainerElement.querySelectorAll('nz-modal-container').length).toBe(0);
+    }));
   });
 
   describe('focus management', () => {
@@ -1528,7 +1556,9 @@ class TestWithViewContainerDirective {
 }
 
 @Component({
-  template: ` <test-with-view-container></test-with-view-container> `
+  template: `
+    <test-with-view-container></test-with-view-container>
+  `
 })
 class TestWithChildViewContainerComponent {
   @ViewChild(TestWithViewContainerDirective) childWithViewContainer!: TestWithViewContainerDirective;
@@ -1549,8 +1579,8 @@ class TestWithOnPushViewContainerComponent {
 @Component({
   template: `
     <ng-template let-modalRef="modalRef">
-      <span class="modal-template-content">Hello {{ value }}</span
-      >{{ setModalRef(modalRef) }}
+      <span class="modal-template-content">Hello {{ value }}</span>
+      {{ setModalRef(modalRef) }}
     </ng-template>
   `
 })

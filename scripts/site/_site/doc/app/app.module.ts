@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { LeftOutline, RightOutline } from '@ant-design/icons-angular/icons';
+import { LeftOutline, RightOutline, EditOutline } from '@ant-design/icons-angular/icons';
 import { NzAffixModule } from 'ng-zorro-antd/affix';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -31,9 +31,9 @@ import { FooterModule } from './footer/footer.module';
 import { HeaderModule } from './header/header.module';
 import { NzContributorsListModule } from './share/contributors-list/contributors-list.module';
 import { FixedWidgetsModule } from './share/fixed-widgets/fixed-widgets.module';
-import { NzNavBottomModule } from "./share/nav-bottom/nav-bottom.module";
+import { NzNavBottomModule } from './share/nav-bottom/nav-bottom.module';
 
-const icons: IconDefinition[] = [LeftOutline, RightOutline];
+const icons: IconDefinition[] = [LeftOutline, RightOutline, EditOutline];
 
 @NgModule({
   declarations: [AppComponent, DEMOComponent],
@@ -54,7 +54,6 @@ const icons: IconDefinition[] = [LeftOutline, RightOutline];
     NzPopoverModule,
     NzButtonModule,
     NzInputModule,
-    NzIconModule,
     NzBadgeModule,
     HttpClientJsonpModule,
     HeaderModule,
@@ -62,14 +61,13 @@ const icons: IconDefinition[] = [LeftOutline, RightOutline];
     NzContributorsListModule,
     FixedWidgetsModule,
     QuicklinkModule,
-    RouterModule.forRoot(routes, environment.production ? { preloadingStrategy: QuicklinkStrategy, scrollPositionRestoration: 'enabled'  } : {}),
+    RouterModule.forRoot(
+      routes,
+      environment.production ? { preloadingStrategy: QuicklinkStrategy, scrollPositionRestoration: 'enabled' } : {}
+    ),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production && !environment.preProduction })
   ],
-  providers: [
-    Title,
-    { provide: NZ_CONFIG, useValue: { icon: { nzTwotoneColor: '#1890ff' } }}
-  ],
+  providers: [Title, { provide: NZ_CONFIG, useValue: { icon: { nzTwotoneColor: '#1890ff' } } }],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

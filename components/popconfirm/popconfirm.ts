@@ -45,8 +45,8 @@ export class NzPopconfirmDirective extends NzTooltipBaseDirective {
 
   @Input('nzPopconfirmTitle') specificTitle?: NzTSType;
   @Input('nz-popconfirm') directiveNameTitle?: NzTSType | null;
-  @Input('nzPopconfirmTrigger') specificTrigger?: NzTooltipTrigger;
-  @Input('nzPopconfirmPlacement') specificPlacement?: string;
+  @Input('nzPopconfirmTrigger') specificTrigger?: NzTooltipTrigger = 'click';
+  @Input('nzPopconfirmPlacement') specificPlacement?: string = 'top';
   @Input('nzPopconfirmOrigin') specificOrigin?: ElementRef<HTMLElement>;
   @Input('nzPopconfirmMouseEnterDelay') specificMouseEnterDelay?: number;
   @Input('nzPopconfirmMouseLeaveDelay') specificMouseLeaveDelay?: number;
@@ -134,6 +134,7 @@ export class NzPopconfirmDirective extends NzTooltipBaseDirective {
       (positionChange)="onPositionChange($event)"
       [cdkConnectedOverlayPositions]="_positions"
       [cdkConnectedOverlayOpen]="_visible"
+      [cdkConnectedOverlayPush]="true"
     >
       <div
         class="ant-popover"

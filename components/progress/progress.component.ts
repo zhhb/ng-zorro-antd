@@ -4,7 +4,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { NzConfigService, WithConfig } from 'ng-zorro-antd/core/config';
+import { NzConfigKey, NzConfigService, WithConfig } from 'ng-zorro-antd/core/config';
 import { NgStyleInterface, NumberInput } from 'ng-zorro-antd/core/types';
 import { InputNumber, isNotNil } from 'ng-zorro-antd/core/util';
 import { Subject } from 'rxjs';
@@ -26,7 +26,7 @@ import { handleCircleGradient, handleLinearGradient } from './utils';
 
 let gradientIdSeed = 0;
 
-const NZ_CONFIG_COMPONENT_NAME = 'progress';
+const NZ_CONFIG_MODULE_NAME: NzConfigKey = 'progress';
 const statusIconNameMap = new Map([
   ['success', 'check'],
   ['exception', 'close']
@@ -68,6 +68,7 @@ const defaultFormatter: NzProgressFormatter = (p: number): string => `${p}%`;
     >
       <!-- line progress -->
       <div *ngIf="nzType === 'line'">
+        <!-- normal line style -->
         <ng-container *ngIf="!isSteps">
           <div class="ant-progress-outer" *ngIf="!isSteps">
             <div class="ant-progress-inner">
@@ -90,7 +91,7 @@ const defaultFormatter: NzProgressFormatter = (p: number): string => `${p}%`;
           </div>
           <ng-template [ngTemplateOutlet]="progressInfoTemplate"></ng-template>
         </ng-container>
-        <!-- Step style progress -->
+        <!-- step style -->
         <div class="ant-progress-steps-outer" *ngIf="isSteps">
           <div *ngFor="let step of steps; let i = index" class="ant-progress-steps-item" [ngStyle]="step"></div>
           <ng-template [ngTemplateOutlet]="progressInfoTemplate"></ng-template>
@@ -137,27 +138,29 @@ const defaultFormatter: NzProgressFormatter = (p: number): string => `${p}%`;
   `
 })
 export class NzProgressComponent implements OnChanges, OnInit, OnDestroy {
+  readonly _nzModuleName: NzConfigKey = NZ_CONFIG_MODULE_NAME;
+
   static ngAcceptInputType_nzSuccessPercent: NumberInput;
   static ngAcceptInputType_nzPercent: NumberInput;
   static ngAcceptInputType_nzStrokeWidth: NumberInput;
   static ngAcceptInputType_nzGapDegree: NumberInput;
   static ngAcceptInputType_nzSteps: NumberInput;
 
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) nzShowInfo: boolean = true;
+  @Input() @WithConfig() nzShowInfo: boolean = true;
   @Input() nzWidth = 132;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) nzStrokeColor?: NzProgressStrokeColorType = undefined;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) nzSize: 'default' | 'small' = 'default';
+  @Input() @WithConfig() nzStrokeColor?: NzProgressStrokeColorType = undefined;
+  @Input() @WithConfig() nzSize: 'default' | 'small' = 'default';
   @Input() nzFormat?: NzProgressFormatter;
   @Input() @InputNumber() nzSuccessPercent?: number;
   @Input() @InputNumber() nzPercent: number = 0;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) @InputNumber() nzStrokeWidth?: number = undefined;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) @InputNumber() nzGapDegree?: number = undefined;
+  @Input() @WithConfig() @InputNumber() nzStrokeWidth?: number = undefined;
+  @Input() @WithConfig() @InputNumber() nzGapDegree?: number = undefined;
   @Input() nzStatus?: NzProgressStatusType;
   @Input() nzType: NzProgressTypeType = 'line';
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) nzGapPosition: NzProgressGapPositionType = 'top';
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) nzStrokeLinecap: NzProgressStrokeLinecapType = 'round';
+  @Input() @WithConfig() nzGapPosition: NzProgressGapPositionType = 'top';
+  @Input() @WithConfig() nzStrokeLinecap: NzProgressStrokeLinecapType = 'round';
 
-  @Input() @InputNumber() nzSteps?: number;
+  @Input() @InputNumber() nzSteps: number = 0;
 
   steps: NzProgressStepItem[] = [];
 
@@ -208,7 +211,18 @@ export class NzProgressComponent implements OnChanges, OnInit, OnDestroy {
   constructor(public nzConfigService: NzConfigService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    const { nzSteps, nzGapPosition, nzStrokeLinecap, nzStrokeColor, nzGapDegree, nzType, nzStatus, nzPercent, nzSuccessPercent } = changes;
+    const {
+      nzSteps,
+      nzGapPosition,
+      nzStrokeLinecap,
+      nzStrokeColor,
+      nzGapDegree,
+      nzType,
+      nzStatus,
+      nzPercent,
+      nzSuccessPercent,
+      nzStrokeWidth
+    } = changes;
 
     if (nzStatus) {
       this.cachedStatus = this.nzStatus || this.cachedStatus;
@@ -225,7 +239,7 @@ export class NzProgressComponent implements OnChanges, OnInit, OnDestroy {
       }
     }
 
-    if (nzStatus || nzPercent || nzSuccessPercent) {
+    if (nzStatus || nzPercent || nzSuccessPercent || nzStrokeColor) {
       this.updateIcon();
     }
 
@@ -233,19 +247,21 @@ export class NzProgressComponent implements OnChanges, OnInit, OnDestroy {
       this.setStrokeColor();
     }
 
-    if (nzGapPosition || nzStrokeLinecap || nzGapDegree || nzType || nzPercent || nzStrokeColor) {
+    if (nzGapPosition || nzStrokeLinecap || nzGapDegree || nzType || nzPercent || nzStrokeColor || nzStrokeColor) {
       this.getCirclePaths();
     }
 
-    if (nzSteps) {
-      this.isSteps = isNotNil(nzSteps.currentValue);
-      this.getSteps();
+    if (nzPercent || nzSteps || nzStrokeWidth) {
+      this.isSteps = this.nzSteps > 0;
+      if (this.isSteps) {
+        this.getSteps();
+      }
     }
   }
 
   ngOnInit(): void {
     this.nzConfigService
-      .getConfigChangeEventForComponent(NZ_CONFIG_COMPONENT_NAME)
+      .getConfigChangeEventForComponent(NZ_CONFIG_MODULE_NAME)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.updateIcon();
@@ -268,10 +284,12 @@ export class NzProgressComponent implements OnChanges, OnInit, OnDestroy {
    * Calculate step render configs.
    */
   private getSteps(): void {
-    const current = Math.floor(this.nzSteps! * (this.nzPercent / 100));
+    const current = Math.floor(this.nzSteps * (this.nzPercent / 100));
     const stepWidth = this.nzSize === 'small' ? 2 : 14;
 
-    for (let i = 0; i < this.nzSteps!; i++) {
+    const steps = [];
+
+    for (let i = 0; i < this.nzSteps; i++) {
       let color;
       if (i <= current - 1) {
         color = this.nzStrokeColor;
@@ -281,8 +299,10 @@ export class NzProgressComponent implements OnChanges, OnInit, OnDestroy {
         width: `${stepWidth}px`,
         height: `${this.strokeWidth}px`
       };
-      this.steps.push(stepStyle);
+      steps.push(stepStyle);
     }
+
+    this.steps = steps;
   }
 
   /**

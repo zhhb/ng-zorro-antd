@@ -3,7 +3,7 @@
  * found in the LICENSE file at https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/LICENSE
  */
 
-import { ConfigurableFocusTrapFactory } from '@angular/cdk/a11y';
+import { FocusTrapFactory } from '@angular/cdk/a11y';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
@@ -28,7 +28,7 @@ import { NzI18nService, NzModalI18nInterface } from 'ng-zorro-antd/i18n';
 import { takeUntil } from 'rxjs/operators';
 
 import { nzModalAnimations } from './modal-animations';
-import { BaseModalContainer } from './modal-container';
+import { BaseModalContainerComponent } from './modal-container';
 import { ModalOptions } from './modal-types';
 
 @Component({
@@ -104,7 +104,7 @@ import { ModalOptions } from './modal-types';
     '(mouseup)': 'onMouseup()'
   }
 })
-export class NzModalConfirmContainerComponent extends BaseModalContainer {
+export class NzModalConfirmContainerComponent extends BaseModalContainerComponent {
   @ViewChild(CdkPortalOutlet, { static: true }) portalOutlet!: CdkPortalOutlet;
   @ViewChild('modalElement', { static: true }) modalElementRef!: ElementRef<HTMLDivElement>;
   @Output() readonly cancelTriggered = new EventEmitter<void>();
@@ -114,7 +114,7 @@ export class NzModalConfirmContainerComponent extends BaseModalContainer {
   constructor(
     private i18n: NzI18nService,
     elementRef: ElementRef,
-    focusTrapFactory: ConfigurableFocusTrapFactory,
+    focusTrapFactory: FocusTrapFactory,
     cdr: ChangeDetectorRef,
     render: Renderer2,
     overlayRef: OverlayRef,

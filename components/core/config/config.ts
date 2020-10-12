@@ -102,6 +102,7 @@ export interface CardConfig {
   nzSize?: NzSizeDSType;
   nzHoverable?: boolean;
   nzBordered?: boolean;
+  nzBorderless?: boolean;
 }
 
 export interface CarouselConfig {
@@ -120,6 +121,7 @@ export interface CascaderConfig {
 export interface CollapseConfig {
   nzAccordion?: boolean;
   nzBordered?: boolean;
+  nzGhost?: boolean;
 }
 
 export interface CollapsePanelConfig {

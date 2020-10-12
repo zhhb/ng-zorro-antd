@@ -3,6 +3,7 @@ category: Components
 type: Layout
 cols: 1
 title: Space
+cover: https://gw.alipayobjects.com/zos/antfincdn/wc6%263gJ0Y8/Space.svg
 ---
 
 Set components spacing.
@@ -24,3 +25,4 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 | --- | --- | --- | --- | --- |
 | `[nzSize]` | space size | `small` \| `middle` \| `large` \| `number` | `small` | ✅ |
 | `[nzDirection]` | space direction | `vertical` \| `horizontal` | `horizontal` |  |
+| `[nzAlign]` | align items | `start` \| `end` \| `baseline` \| `horizontal` | - | |

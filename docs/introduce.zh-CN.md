@@ -6,9 +6,9 @@ title: Ant Design of Angular
 `ng-zorro-antd` 是 Ant Design 的 Angular 实现，主要用于研发企业级中后台产品。
 
 <div class="pic-plus">
-  <img width="150" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
+  <img alt="Ant Design" width="150" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
   <span>+</span>
-  <img height="150" src="https://img.alicdn.com/tfs/TB1Z0PywTtYBeNjy1XdXXXXyVXa-186-200.svg">
+  <img alt="Angular" height="150" src="https://img.alicdn.com/tfs/TB1Z0PywTtYBeNjy1XdXXXXyVXa-186-200.svg">
 </div>
 
 <style>
@@ -48,11 +48,11 @@ title: Ant Design of Angular
 [![npm package](https://img.shields.io/npm/v/ng-zorro-antd.svg?style=flat-square)](https://www.npmjs.org/package/ng-zorro-antd)
 ## 支持 Angular 版本
 
-`ng-zorro-antd` 与 `@angular/core` 保持相同的主版本号，目前支持 Angular `^9.0.0` 版本。
+`ng-zorro-antd` 与 `@angular/core` 保持相同的主版本号，目前支持 Angular `^10.0.0` 版本。
 
 ## 设计规范
 
-与 Ant Design 设计规范定期同步，你可以在线查看[同步日志](https://nz-styles-syncer.now.sh/)。
+与 Ant Design 设计规范定期同步，你可以在线查看[同步日志](https://github.com/NG-ZORRO/ng-zorro-antd/actions?query=workflow:"styles-sync")。
 
 ## 安装
 
@@ -77,9 +77,10 @@ $ ng add ng-zorro-antd
 
 ## 谁在使用
 
-- [阿里巴巴](http://www.alibaba.com/)
-- [阿里云](http://www.aliyun.com/)
+- [阿里巴巴](https://www.alibaba.com/)
+- [阿里云](https://www.aliyun.com/)
 - [思特沃克](https://www.thoughtworks.com/)
+- [招商银行](http://www.cmbchina.com/)
 - [共道科技](https://www.gongdao.com/)
 - [优速快递](http://www.uce.cn/)
 - [轻流](https://qingflow.com/)
@@ -87,7 +88,7 @@ $ ng add ng-zorro-antd
 - [达观数据](http://datagrand.com/)
 - [Ververica](https://www.ververica.com/)
 - [Apache Flink](https://flink.apache.org/)
-- [Apache Zeppelin](http://zeppelin.apache.org/)
+- [Apache Zeppelin](https://zeppelin.apache.org/)
 - [Process Automation Group](http://pag.company/)
 - [ScentBird](https://www.scentbird.com/)
 - [Southern Institute of Technology](https://www.sit.ac.nz/)
@@ -109,7 +110,7 @@ $ ng add ng-zorro-antd
 
 1. [Stack Overflow](https://stackoverflow.com/questions/tagged/ng-zorro-antd)（English）
 2. [Segment Fault](https://segmentfault.com/t/ng-zorro)（中文）
-3. [![Gitter](https://img.shields.io/gitter/room/ng-zorro/ng-zorro-antd.svg?style=flat-square)](https://gitter.im/ng-zorro/ng-zorro-antd)
+3. [Discussions · NG-ZORRO/ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd/discussions)
 4. 加入钉钉 NG-ZORRO 自助服务群（中文）
 
 <img src="https://img.alicdn.com/tfs/TB1oRkkzy_1gK0jSZFqXXcpaXXa-750-990.jpg" width="300" loading="lazy" alt="ding talk qr-code">

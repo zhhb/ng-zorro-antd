@@ -6,9 +6,9 @@ title: Ant Design of Angular
 Following the Ant Design specification, we developed an Angular UI library `ng-zorro-antd` that contains a set of high-quality components and demos for building rich, interactive user interfaces.
 
 <div class="pic-plus">
-  <img width="150" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
+  <img alt="Ant Design" width="150" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg">
   <span>+</span>
-  <img height="150" src="https://img.alicdn.com/tfs/TB1Z0PywTtYBeNjy1XdXXXXyVXa-186-200.svg">
+  <img alt="Angular" height="150" src="https://img.alicdn.com/tfs/TB1Z0PywTtYBeNjy1XdXXXXyVXa-186-200.svg">
 </div>
 
 <style>
@@ -48,11 +48,11 @@ Following the Ant Design specification, we developed an Angular UI library `ng-z
 
 ## Angular Support
 
-`ng-zorro-antd` keeps the same major version with `@angular/core`, now supports Angular `^9.0.0`.
+`ng-zorro-antd` keeps the same major version with `@angular/core`, now supports Angular `^10.0.0`.
 
 ## Design Specification
 
-`ng-zorro-antd` synchronizes design specification with [Ant Design](https://ant.design/docs/spec/introduce) on a regular basis, you can check the [log](https://nz-styles-syncer.now.sh/) online.
+`ng-zorro-antd` synchronizes design specification with [Ant Design](https://ant.design/docs/spec/introduce) on a regular basis, you can check the [log](https://github.com/NG-ZORRO/ng-zorro-antd/actions?query=workflow:"styles-sync") online.
 
 
 ## Installation
@@ -75,12 +75,13 @@ $ npm install ng-zorro-antd
 
 ## Companies using ng-zorro-antd
 
-- [Alibaba](http://www.alibaba.com/)
-- [Aliyun](http://www.aliyun.com/)
+- [Alibaba](https://www.alibaba.com/)
+- [Aliyun](https://www.aliyun.com/)
 - [ThoughtWorks](https://www.thoughtworks.com/)
+- [China Merchants Bank](http://english.cmbchina.com/)
 - [Ververica](https://www.ververica.com/)
 - [Apache Flink](https://flink.apache.org/)
-- [Apache Zeppelin](http://zeppelin.apache.org/)
+- [Apache Zeppelin](https://zeppelin.apache.org/)
 - [Process Automation Group](http://pag.company/)
 - [AISINOCO](http://www.aisino.com/)
 - [GongDao](https://www.gongdao.com/)
@@ -103,6 +104,6 @@ If you'd like to help us improve ng-zorro-antd, just create a [Pull Request](htt
 
 ## Need Help?
 
-For questions on how to use ng-zorro-antd, please post questions to [<img alt="Stack Overflow" src="https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-logo.svg?v=2bb144720a66" width="140" />](http://stackoverflow.com/questions/tagged/ng-zorro-antd) using the `ng-zorro-antd` tag. If you're not finding what you need on stackoverflow, you can find us on [![Gitter](https://img.shields.io/gitter/room/ng-zorro/ng-zorro-antd.svg?style=flat-square)](https://gitter.im/ng-zorro/ng-zorro-antd) as well.
+For questions on how to use ng-zorro-antd, please post questions to [<img alt="Stack Overflow" src="https://cdn.sstatic.net/Sites/stackoverflow/company/img/logos/so/so-logo.svg?v=2bb144720a66" width="140" />](http://stackoverflow.com/questions/tagged/ng-zorro-antd) using the `ng-zorro-antd` tag. If you're not finding what you need on stackoverflow, you can find us on [Discussions · NG-ZORRO/ng-zorro-antd](https://github.com/NG-ZORRO/ng-zorro-antd/discussions) as well.
 
 As always, we encourage experienced users to help those who are not familiar with `ng-zorro-antd`!

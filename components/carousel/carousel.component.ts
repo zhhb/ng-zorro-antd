@@ -27,7 +27,7 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import { NzConfigService, WithConfig } from 'ng-zorro-antd/core/config';
+import { NzConfigKey, NzConfigService, WithConfig } from 'ng-zorro-antd/core/config';
 import { NzDragService, NzResizeService } from 'ng-zorro-antd/core/services';
 import { BooleanInput, NumberInput, NzSafeAny } from 'ng-zorro-antd/core/types';
 import { InputBoolean, InputNumber } from 'ng-zorro-antd/core/util';
@@ -40,14 +40,14 @@ import { NzCarouselOpacityStrategy } from './strategies/opacity-strategy';
 import { NzCarouselTransformStrategy } from './strategies/transform-strategy';
 import {
   FromToInterface,
-  NZ_CAROUSEL_CUSTOM_STRATEGIES,
   NzCarouselDotPosition,
   NzCarouselEffects,
   NzCarouselStrategyRegistryItem,
+  NZ_CAROUSEL_CUSTOM_STRATEGIES,
   PointerVector
 } from './typings';
 
-const NZ_CONFIG_COMPONENT_NAME = 'carousel';
+const NZ_CONFIG_MODULE_NAME: NzConfigKey = 'carousel';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -80,7 +80,7 @@ const NZ_CONFIG_COMPONENT_NAME = 'carousel';
         [class.slick-dots-right]="nzDotPosition === 'right'"
       >
         <li *ngFor="let content of carouselContents; let i = index" [class.slick-active]="content.isActive" (click)="goTo(i)">
-          <ng-template [ngTemplateOutlet]="nzDotRender || renderDotTemplate" [ngTemplateOutletContext]="{ $implicit: i }"> </ng-template>
+          <ng-template [ngTemplateOutlet]="nzDotRender || renderDotTemplate" [ngTemplateOutletContext]="{ $implicit: i }"></ng-template>
         </li>
       </ul>
     </div>
@@ -94,6 +94,7 @@ const NZ_CONFIG_COMPONENT_NAME = 'carousel';
   }
 })
 export class NzCarouselComponent implements AfterContentInit, AfterViewInit, OnDestroy, OnChanges {
+  readonly _nzModuleName: NzConfigKey = NZ_CONFIG_MODULE_NAME;
   static ngAcceptInputType_nzEnableSwipe: BooleanInput;
   static ngAcceptInputType_nzDots: BooleanInput;
   static ngAcceptInputType_nzAutoPlay: BooleanInput;
@@ -106,16 +107,16 @@ export class NzCarouselComponent implements AfterContentInit, AfterViewInit, OnD
   @ViewChild('slickTrack', { static: false }) slickTrack?: ElementRef;
 
   @Input() nzDotRender?: TemplateRef<{ $implicit: number }>;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) nzEffect: NzCarouselEffects = 'scrollx';
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) @InputBoolean() nzEnableSwipe: boolean = true;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) @InputBoolean() nzDots: boolean = true;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) @InputBoolean() nzAutoPlay: boolean = false;
-  @Input() @WithConfig(NZ_CONFIG_COMPONENT_NAME) @InputNumber() nzAutoPlaySpeed: number = 3000;
+  @Input() @WithConfig() nzEffect: NzCarouselEffects = 'scrollx';
+  @Input() @WithConfig() @InputBoolean() nzEnableSwipe: boolean = true;
+  @Input() @WithConfig() @InputBoolean() nzDots: boolean = true;
+  @Input() @WithConfig() @InputBoolean() nzAutoPlay: boolean = false;
+  @Input() @WithConfig() @InputNumber() nzAutoPlaySpeed: number = 3000;
   @Input() @InputNumber() nzTransitionSpeed = 500;
 
   @Input()
   // @ts-ignore
-  @WithConfig(NZ_CONFIG_COMPONENT_NAME)
+  @WithConfig()
   set nzDotPosition(value: NzCarouselDotPosition) {
     this._dotPosition = value;
     if (value === 'left' || value === 'right') {
@@ -169,32 +170,30 @@ export class NzCarouselComponent implements AfterContentInit, AfterViewInit, OnD
   }
 
   ngAfterViewInit(): void {
-    if (!this.platform.isBrowser) {
-      return;
-    }
     this.slickListEl = this.slickList!.nativeElement;
     this.slickTrackEl = this.slickTrack!.nativeElement;
 
     this.carouselContents.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.markContentActive(0);
-      this.syncStrategy();
+      this.layout();
     });
 
     this.resizeService
       .subscribe()
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.syncStrategy();
+        this.layout();
       });
 
     this.switchStrategy();
     this.markContentActive(0);
-    this.syncStrategy();
+    this.layout();
 
-    // If embedded in an entry component, it may do initial render at a inappropriate time.
+    // If embedded in an entry component, it may do initial render at an inappropriate time.
     // ngZone.onStable won't do this trick
+    // TODO: need to change this.
     Promise.resolve().then(() => {
-      this.syncStrategy();
+      this.layout();
     });
   }
 
@@ -204,13 +203,13 @@ export class NzCarouselComponent implements AfterContentInit, AfterViewInit, OnD
     if (nzEffect && !nzEffect.isFirstChange()) {
       this.switchStrategy();
       this.markContentActive(0);
-      this.syncStrategy();
+      this.layout();
     }
 
     if (nzDotPosition && !nzDotPosition.isFirstChange()) {
       this.switchStrategy();
       this.markContentActive(0);
-      this.syncStrategy();
+      this.layout();
     }
 
     if (!this.nzAutoPlay || !this.nzAutoPlaySpeed) {
@@ -273,14 +272,14 @@ export class NzCarouselComponent implements AfterContentInit, AfterViewInit, OnD
     // Load custom strategies first.
     const customStrategy = this.customStrategies ? this.customStrategies.find(s => s.name === this.nzEffect) : null;
     if (customStrategy) {
-      this.strategy = new (customStrategy.strategy as NzSafeAny)(this, this.cdr, this.renderer);
+      this.strategy = new (customStrategy.strategy as NzSafeAny)(this, this.cdr, this.renderer, this.platform);
       return;
     }
 
     this.strategy =
       this.nzEffect === 'scrollx'
-        ? new NzCarouselTransformStrategy(this, this.cdr, this.renderer)
-        : new NzCarouselOpacityStrategy(this, this.cdr, this.renderer);
+        ? new NzCarouselTransformStrategy(this, this.cdr, this.renderer, this.platform)
+        : new NzCarouselOpacityStrategy(this, this.cdr, this.renderer, this.platform);
   }
 
   private scheduleNextTransition(): void {
@@ -347,7 +346,7 @@ export class NzCarouselComponent implements AfterContentInit, AfterViewInit, OnD
     }
   };
 
-  private syncStrategy(): void {
+  layout(): void {
     if (this.strategy) {
       this.strategy.withCarouselContents(this.carouselContents);
     }

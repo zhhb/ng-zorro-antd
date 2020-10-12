@@ -3,6 +3,7 @@ category: Components
 subtitle: 选择器
 type: 数据录入
 title: Select
+cover: https://gw.alipayobjects.com/zos/alicdn/_0XzgOis7/Select.svg
 ---
 
 下拉选择器。
@@ -30,7 +31,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 | --- | --- | --- | --- | --- |
 | `[ngModel]` | 当前选中的 nz-option 的 nzValue 值，可双向绑定，当 `nzMode` 为 `multiple` 或 `tags` 时，ngModel 为数组 | `any \| any[]` | - |
 | `[compareWith]` | 与 [SelectControlValueAccessor](https://angular.io/api/forms/SelectControlValueAccessor#caveat-option-selection) 相同 | `(o1: any, o2: any) => boolean` | `(o1: any, o2: any) => o1===o2` |
-| `[nzAutoClearSearchValue]` | 是否在选中项后清空搜索框，只在 `mode` 为 `multiple` 或 `tags` 时有效。 | boolean | `true` |
+| `[nzAutoClearSearchValue]` | 是否在选中项后清空搜索框，只在 `mode` 为 `multiple` 或 `tags` 时有效。 | `boolean` | `true` |
 | `[nzAllowClear]` | 支持清除 | `boolean` | `false` |
 | `[nzBorderless]` | 是否无边框 | `boolean` | `false` | ✅ |
 | `[nzOpen]` | 下拉菜单是否打开，可双向绑定 | `boolean` | `false` |
@@ -46,7 +47,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 | `[nzMode]` | 设置 nz-select 的模式 | `'multiple' \| 'tags' \| 'default'` | `'default'` |
 | `[nzNotFoundContent]` | 当下拉列表为空时显示的内容 | `string \| TemplateRef<void>` | - |
 | `[nzPlaceHolder]` | 选择框默认文字 | `string` | - |
-| `[nzShowArrow]` | 是否显示下拉小箭头 | `boolean` | `true` |
+| `[nzShowArrow]` | 是否显示下拉小箭头 | `boolean` | 单选为 `true`，多选为 `false` |
 | `[nzShowSearch]` | 使单选模式可搜索 | `boolean` | `false` |
 | `[nzSize]` | 选择框大小 | `'large' \| 'small' \| 'default'` | `'default'` |
 | `[nzSuffixIcon]` | 自定义的选择框后缀图标 | `TemplateRef<any> \| string` | - | ✅ |

@@ -4,16 +4,17 @@
  */
 
 import { AnimationEvent } from '@angular/animations';
-import { ConfigurableFocusTrapFactory, FocusTrap } from '@angular/cdk/a11y';
+import { FocusTrap, FocusTrapFactory } from '@angular/cdk/a11y';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal } from '@angular/cdk/portal';
-import { ChangeDetectorRef, ComponentRef, ElementRef, EmbeddedViewRef, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, ComponentRef, Directive, ElementRef, EmbeddedViewRef, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
 import { NzConfigService } from 'ng-zorro-antd/core/config';
+import { warnDeprecation } from 'ng-zorro-antd/core/logger';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { getElementOffset } from 'ng-zorro-antd/core/util';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { FADE_CLASS_NAME_MAP, MODAL_MASK_CLASS_NAME, NZ_CONFIG_COMPONENT_NAME, ZOOM_CLASS_NAME_MAP } from './modal-config';
+import { FADE_CLASS_NAME_MAP, MODAL_MASK_CLASS_NAME, NZ_CONFIG_MODULE_NAME, ZOOM_CLASS_NAME_MAP } from './modal-config';
 
 import { NzModalRef } from './modal-ref';
 import { ModalOptions } from './modal-types';
@@ -23,7 +24,8 @@ export function throwNzModalContentAlreadyAttachedError(): never {
   throw Error('Attempting to attach modal content after content is already attached');
 }
 
-export class BaseModalContainer extends BasePortalOutlet implements OnDestroy {
+@Directive()
+export class BaseModalContainerComponent extends BasePortalOutlet implements OnDestroy {
   portalOutlet!: CdkPortalOutlet;
   modalElementRef!: ElementRef<HTMLDivElement>;
 
@@ -43,20 +45,20 @@ export class BaseModalContainer extends BasePortalOutlet implements OnDestroy {
   protected destroy$ = new Subject();
 
   get showMask(): boolean {
-    const defaultConfig = this.nzConfigService.getConfigForComponent(NZ_CONFIG_COMPONENT_NAME) || {};
+    const defaultConfig: NzSafeAny = this.nzConfigService.getConfigForComponent(NZ_CONFIG_MODULE_NAME) || {};
 
     return !!getValueWithConfig<boolean>(this.config.nzMask, defaultConfig.nzMask, true);
   }
 
   get maskClosable(): boolean {
-    const defaultConfig = this.nzConfigService.getConfigForComponent(NZ_CONFIG_COMPONENT_NAME) || {};
+    const defaultConfig: NzSafeAny = this.nzConfigService.getConfigForComponent(NZ_CONFIG_MODULE_NAME) || {};
 
     return !!getValueWithConfig<boolean>(this.config.nzMaskClosable, defaultConfig.nzMaskClosable, true);
   }
 
   constructor(
     protected elementRef: ElementRef,
-    protected focusTrapFactory: ConfigurableFocusTrapFactory,
+    protected focusTrapFactory: FocusTrapFactory,
     public cdr: ChangeDetectorRef,
     protected render: Renderer2,
     protected overlayRef: OverlayRef,
@@ -70,7 +72,7 @@ export class BaseModalContainer extends BasePortalOutlet implements OnDestroy {
     this.isStringContent = typeof config.nzContent === 'string';
     this.setContainer();
     this.nzConfigService
-      .getConfigChangeEventForComponent(NZ_CONFIG_COMPONENT_NAME)
+      .getConfigChangeEventForComponent(NZ_CONFIG_MODULE_NAME)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.updateMaskClassname();
@@ -263,11 +265,6 @@ export class BaseModalContainer extends BasePortalOutlet implements OnDestroy {
     }
   }
 
-  /**
-   * Set the container element.
-   * @deprecated Not supported.
-   * @breaking-change 10.0.0
-   */
   private setContainer(): void {
     const container = this.getContainer();
     if (container) {
@@ -275,11 +272,6 @@ export class BaseModalContainer extends BasePortalOutlet implements OnDestroy {
     }
   }
 
-  /**
-   * Reset the container element.
-   * @deprecated Not supported.
-   * @breaking-change 10.0.0
-   */
   private resetContainer(): void {
     const container = this.getContainer();
     if (container) {
@@ -287,10 +279,20 @@ export class BaseModalContainer extends BasePortalOutlet implements OnDestroy {
     }
   }
 
+  /**
+   * Set the container element.
+   * @deprecated Not supported.
+   * @breaking-change 11.0.0
+   */
   private getContainer(): HTMLElement | null {
     const { nzGetContainer } = this.config;
     const container = typeof nzGetContainer === 'function' ? nzGetContainer() : nzGetContainer;
-    return container instanceof HTMLElement ? container : null;
+    if (container instanceof HTMLElement) {
+      warnDeprecation('nzGetContainer of nz-modal is not support, will be removed in 11.0.0');
+      return container;
+    } else {
+      return null;
+    }
   }
 
   updateMaskClassname(): void {

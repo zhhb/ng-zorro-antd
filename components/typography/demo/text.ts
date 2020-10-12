@@ -17,11 +17,15 @@ import { Component } from '@angular/core';
     <br />
     <span nz-typography><code>Ant Design</code></span>
     <br />
+    <span nz-typography><kbd>Ant Design</kbd></span>
+    <br />
     <span nz-typography><u>Ant Design</u></span>
     <br />
     <span nz-typography><del>Ant Design</del></span>
     <br />
     <span nz-typography><strong>Ant Design</strong></span>
+    <br />
+    <span nz-typography><a href="https://ng.ant.design/" target="_blank">Ant Design</a></span>
   `,
   styles: []
 })

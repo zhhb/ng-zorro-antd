@@ -3,7 +3,7 @@ import { Component, DebugElement, Inject, NgModule, TemplateRef, ViewChild } fro
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { NZ_CONFIG, NzConfigService } from 'ng-zorro-antd/core/config';
+import { NzConfigService, NZ_CONFIG } from 'ng-zorro-antd/core/config';
 import { ComponentBed, createComponentBed } from '../core/testing/component-bed';
 import { NzI18nService } from '../i18n';
 import en_US from '../i18n/languages/en_US';
@@ -111,7 +111,7 @@ describe('nz-empty', () => {
       const contentEl = emptyComponent.nativeElement.lastElementChild;
       expect(contentEl.innerText.trim()).toBe('暂无数据');
 
-      testBed.bed.get(NzI18nService).setLocale(en_US);
+      testBed.bed.inject(NzI18nService).setLocale(en_US);
       fixture.detectChanges();
       expect(contentEl.innerText.trim()).toBe('No Data');
     });
@@ -308,7 +308,9 @@ export class NzEmptyTestServiceComponent {
 @Component({
   // tslint:disable-next-line:no-selector
   selector: 'nz-empty-test-custom',
-  template: ` <div>I'm in component {{ name }}</div> `
+  template: `
+    <div>I'm in component {{ name }}</div>
+  `
 })
 export class NzEmptyTestCustomComponent {
   constructor(@Inject(NZ_EMPTY_COMPONENT_NAME) public name: string) {}

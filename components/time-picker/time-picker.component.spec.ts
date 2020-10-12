@@ -1,10 +1,11 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, DebugElement, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, inject, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { dispatchMouseEvent } from 'ng-zorro-antd/core/testing';
+import { getPickerInput } from 'ng-zorro-antd/date-picker/testing/util';
 import { NzI18nModule } from '../i18n/nz-i18n.module';
 import { NzTimePickerComponent } from './time-picker.component';
 import { NzTimePickerModule } from './time-picker.module';
@@ -15,17 +16,19 @@ registerLocaleData(zh);
 
 describe('time-picker', () => {
   let overlayContainer: OverlayContainer;
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, FormsModule, NzI18nModule, NzTimePickerModule],
-      schemas: [NO_ERRORS_SCHEMA],
-      declarations: [NzTestTimePickerComponent]
-    });
-    TestBed.compileComponents();
-    inject([OverlayContainer], (oc: OverlayContainer) => {
-      overlayContainer = oc;
-    })();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, FormsModule, NzI18nModule, NzTimePickerModule],
+        schemas: [NO_ERRORS_SCHEMA],
+        declarations: [NzTestTimePickerComponent]
+      });
+      TestBed.compileComponents();
+      inject([OverlayContainer], (oc: OverlayContainer) => {
+        overlayContainer = oc;
+      })();
+    })
+  );
   afterEach(inject([OverlayContainer], (currentOverlayContainer: OverlayContainer) => {
     currentOverlayContainer.ngOnDestroy();
     overlayContainer.ngOnDestroy();
@@ -92,7 +95,7 @@ describe('time-picker', () => {
       testComponent.date = new Date('2018-11-11 11:11:11');
       fixture.detectChanges();
       tick(500);
-      testComponent.nzTimePickerComponent.cdr.detectChanges();
+      fixture.detectChanges();
       timeElement.nativeElement.querySelector('.ant-picker-clear').click();
       fixture.detectChanges();
       expect(testComponent.date).toBeNull();
@@ -115,6 +118,8 @@ describe('time-picker', () => {
       expect(overlayContainer.getContainerElement().querySelector('.ant-picker-time-panel-cell-selected > div')!.textContent).toBe('11');
 
       dispatchMouseEvent(overlayContainer.getContainerElement().querySelector('.ant-picker-time-panel-cell')!, 'click');
+      fixture.detectChanges();
+      getPickerInput(fixture.debugElement).dispatchEvent(new KeyboardEvent('keyup', { key: 'enter' }));
       fixture.detectChanges();
       tick(500);
       fixture.detectChanges();

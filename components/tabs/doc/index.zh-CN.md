@@ -4,6 +4,7 @@ subtitle: 标签页
 type: 数据展示
 title: Tabs
 cols: 1
+cover: https://gw.alipayobjects.com/zos/antfincdn/lkI2hNEDr2V/Tabs.svg
 ---
 
 选项卡切换组件。
@@ -34,37 +35,79 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 | `[nzTabBarExtraContent]` | tab bar 上额外的元素 | `TemplateRef<void>` | - |
 | `[nzTabBarStyle]` | tab bar 的样式对象 | `object` | - |
 | `[nzTabPosition]` | 页签位置，可选值有 `top` `right` `bottom` `left` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | |
-| `[nzType]` | 页签的基本样式，可选 `line`、`card` 类型 | `'line' \| 'card'` | `'line'` | ✅ |
+| `[nzType]` | 页签的基本样式 | `'line' \| 'card' \| 'editable-card'` | `'line'` | ✅ |
 | `[nzTabBarGutter]` | tabs 之间的间隙 | `number` | - | ✅ |
 | `[nzHideAll]` | 是否隐藏所有tab内容 | `boolean` | `false` |
-| `[nzShowPagination]` | 是否超出范围时显示pre和next按钮 | `boolean` | `true` | ✅ |
 | `[nzLinkRouter]` | 与 Angular 路由联动 | `boolean` | `false` ||
 | `[nzLinkExact]` | 以严格匹配模式确定联动的路由 | `boolean` | `true` |
 | `[nzCanDeactivate]` | 决定一个 tab 是否可以被切换 | `NzTabsCanDeactivateFn` | - |
+| `[nzCentered]` | 标签居中展示 | `boolean` | `false` |
 | `(nzSelectedIndexChange)` | 当前激活 tab 面板的 序列号变更回调函数 | `EventEmitter<number>` | - |
 | `(nzSelectChange)` | 当前激活 tab 面板变更回调函数 | `EventEmitter<{index: number,tab: NzTabComponent}>` | - |
-| `(nzOnNextClick)` | next 按钮被点击的回调 | `EventEmitter<void>` | - |
-| `(nzOnPrevClick)` | prev 按钮被点击的回调 | `EventEmitter<void>` | - |
+
+### nz-tabset[nzType="editable-card"]
+
+| 参数 | 说明 | 类型 | 默认值 | 全局配置 |
+| --- | --- | --- | --- | --- |
+| `[nzHideAdd]` | 隐藏添加按钮 | `boolean` | `false` |
+| `[nzAddIcon]` | 添加按钮图标 | `string \| TemplateRef<void>` | - |
+| `(nzAdd)` | 点击添加按钮时的事件 | `EventEmitter<>` | - |
+| `(nzClose)` | 点击删除按钮时的事件 | `EventEmitter<{ index: number }>` | - |
+
 
 ### nz-tab
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| `[nzTitle]` | 选项卡头显示文字 | `string \| TemplateRef<void>` | - |
+| `[nzTitle]` | 选项卡头显示文字 | `string \| TemplateRef<TabTemplateContext>` | - |
 | `[nzForceRender]` | 被隐藏时是否渲染 DOM 结构 | `boolean` | `false` |
 | `[nzDisabled]` | 是否禁用 | `boolean` | - |
-| `(nzClick)` | title被点击的回调函数 | `EventEmitter<void>` | - |
-| `(nzSelect)` | tab被选中的回调函数 | `EventEmitter<void>` | - |
-| `(nzDeselect)` | tab被取消选中的回调函数 | `EventEmitter<void>` | - |
+| `(nzClick)` | 单击 title 的回调函数 | `EventEmitter<void>` | - |
+| `(nzContextmenu)` | 右键 title 的回调函数 | `EventEmitter<MouseEvent>` | - |
+| `(nzSelect)` | tab 被选中的回调函数 | `EventEmitter<void>` | - |
+| `(nzDeselect)` | tab 被取消选中的回调函数 | `EventEmitter<void>` | - |
+
+### nz-tabset[nzType="editable-card"] > nz-tab
+| 参数 | 说明 | 类型 | 默认值 | 全局配置 |
+| --- | --- | --- | --- | --- |
+| `[nzClosable]` | 显示删除按钮 | `boolean` | `false` |
+| `[nzCloseIcon]` | 关闭按钮图标 | `string \| TemplateRef<void>` | - |
+
+
+#### `nz-tab[nzTitle]` 的模版引用变量
+
+| 属性 | 说明 | 类型 |
+| --- | --- | --- |
+| `visible` | 表示是否在可见区域, 为 `false` 时将会被渲染到下拉菜单中 | `boolean` |
+
+在 `nz-tab[nzTitle]` 中使用
+```html
+<nz-tab [nzTitle]="titleTemplate">
+  ...
+  <ng-template #titleTemplate let-visible="visible">...</ng-template>
+</nz-tab>
+```
+
+在 `*nzTabLink` 中使用
+```html
+<nz-tab>
+  <a *nzTabLink="let visible = visible" nz-tab-link [routerLink]="['.']">...</a>
+</nz-tab>
+```
 
 ### [nz-tab]
 
 与 `ng-template` 一同使用，用于标记需要懒加载的 `tab` 内容，具体用法见示例。
 
-### [nz-tab-link]
+### ng-template[nzTabLink] > a[nz-tab-link]
 
-选项卡头显示链接，在路由联动模式下使用。
+路由联动可以让 tab 的切换和路由行为相一致。
 
-### 路由联动
-
-路由联动可以让 tab 的切换和路由行为相一致。使用此功能时，title 必须通过 `nz-tab-link` 组件指定。
+```html
+<nz-tabset nzLinkRouter>
+  <nz-tab>
+    <a *nzTabLink nz-tab-link [routerLink]="['.']">Link</a>
+    Default.
+  </nz-tab>
+</nz-tabset>
+```

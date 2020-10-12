@@ -3,14 +3,6 @@
  * found in the LICENSE file at https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/LICENSE
  */
 
-/**
- * @license
- * Copyright Alibaba.com All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/LICENSE
- */
-
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -44,8 +36,8 @@ import { isTooltipEmpty, NzTooltipBaseComponent, NzTooltipBaseDirective, NzToolt
 export class NzTooltipDirective extends NzTooltipBaseDirective {
   @Input('nzTooltipTitle') specificTitle?: NzTSType | null;
   @Input('nz-tooltip') directiveNameTitle?: NzTSType | null;
-  @Input('nzTooltipTrigger') specificTrigger?: NzTooltipTrigger;
-  @Input('nzTooltipPlacement') specificPlacement?: string;
+  @Input('nzTooltipTrigger') specificTrigger?: NzTooltipTrigger = 'hover';
+  @Input('nzTooltipPlacement') specificPlacement?: string = 'top';
   @Input('nzTooltipOrigin') specificOrigin?: ElementRef<HTMLElement>;
   @Input('nzTooltipVisible') specificVisible?: boolean;
   @Input('nzTooltipMouseEnterDelay') specificMouseEnterDelay?: number;
@@ -55,6 +47,7 @@ export class NzTooltipDirective extends NzTooltipBaseDirective {
 
   // tslint:disable-next-line:no-output-rename
   @Output('nzTooltipVisibleChange') readonly specificVisibleChange = new EventEmitter<boolean>();
+
   componentFactory: ComponentFactory<NzToolTipComponent> = this.resolver.resolveComponentFactory(NzToolTipComponent);
 
   constructor(
@@ -83,6 +76,7 @@ export class NzTooltipDirective extends NzTooltipBaseDirective {
       [cdkConnectedOverlayOpen]="_visible"
       [cdkConnectedOverlayHasBackdrop]="_hasBackdrop"
       [cdkConnectedOverlayPositions]="_positions"
+      [cdkConnectedOverlayPush]="true"
       (backdropClick)="hide()"
       (detach)="hide()"
       (positionChange)="onPositionChange($event)"
@@ -96,7 +90,9 @@ export class NzTooltipDirective extends NzTooltipBaseDirective {
         [@zoomBigMotion]="'active'"
       >
         <div class="ant-tooltip-content">
-          <div class="ant-tooltip-arrow"></div>
+          <div class="ant-tooltip-arrow">
+            <span class="ant-tooltip-arrow-content"></span>
+          </div>
           <div class="ant-tooltip-inner">
             <ng-container *nzStringTemplateOutlet="nzTitle">{{ nzTitle }}</ng-container>
           </div>

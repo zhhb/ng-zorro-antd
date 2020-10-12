@@ -50,7 +50,7 @@ English | [简体中文](README-zh_CN.md)
 
 ## 🖥 Environment Support
 
-* Angular `^9.0.0` [![npm package](https://img.shields.io/npm/v/ng-zorro-antd.svg?style=flat-square)](https://www.npmjs.org/package/ng-zorro-antd)
+* Angular `^10.0.0` [![npm package](https://img.shields.io/npm/v/ng-zorro-antd.svg?style=flat-square)](https://www.npmjs.org/package/ng-zorro-antd)
 * Server-side Rendering
 * Modern browsers and Internet Explorer 11+ (with [polyfills](https://angular.io/guide/browser-support))
 * [Electron](http://electron.atom.io/)
@@ -156,13 +156,13 @@ As always, we encourage experienced users to help those who are not familiar wit
 
 ## 🎉 Users
 
-- [Alibaba](http://www.alibaba.com/)
-- [Aliyun](http://www.aliyun.com/)
+- [Alibaba](https://www.alibaba.com/)
+- [Aliyun](https://www.aliyun.com/)
 - [ThoughtWorks](https://www.thoughtworks.com/)
+- [China Merchants Bank](http://english.cmbchina.com/)
 - [Ververica](https://www.ververica.com/)
 - [Apache Flink](https://flink.apache.org/)
-- [Apache Zeppelin](http://zeppelin.apache.org/)
-- [Apache Metron](https://metron.apache.org/)
+- [Apache Zeppelin](https://zeppelin.apache.org/)
 - [Process Automation Group](http://pag.company/)
 - [AISINOCO](http://www.aisino.com/)
 - [GongDao](https://www.gongdao.com/)
